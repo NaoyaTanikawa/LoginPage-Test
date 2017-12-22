@@ -2,5 +2,17 @@ extends layout
 
 block content
   h1= title
-  p ログインページ遷移テスト
+  h2 ログインページ
+  p#id_test test
+  P= msg
+  form(action="/login", method="post")
+    div
+      label ユーザーID：
+        input(type="text", name="Email")
+    div
+      label パスワード：
+        input(type="password", name="password")
+    div
+      input(type="submit", value="ログイン")
+    a(href="/logout") ログアウト
   a(href='/') 戻る

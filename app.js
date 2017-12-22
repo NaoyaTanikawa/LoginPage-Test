@@ -4,10 +4,18 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var passport = require('passport');
+var LocalStrategy = require("passport-local").Strategy;
+var flash = require('connect-flash');
+var session = require("express-session");
+var db = require('./db');
+var result = "";
 
 var index = require('./routes/index');
 //var users = require('./routes/users');
 var test = require('./routes/test');
+var login = require('./routes/login');
+var mypage = require('./routes/mypage');
 
 var app = express();
 
@@ -22,10 +30,54 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(flash());
+
+app.use(session({
+    secret: 'testtesttest', //セッションのハッシュ文字列。任意に変更すること。
+    resave: true,
+    saveUninitialized: true 
+}));
+//passportの初期化
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use('/', index);
 //app.use('/users', users);
 app.use('/test', test);
+app.use('/login', login);
+app.use('/mypage', mypage);
+app.get("/logout", function(req, res){
+    req.logout();
+    res.redirect("/login");
+});
+
+//セッション管理
+passport.serializeUser(function(user, done) {
+    console.log('user.id=' + user.id);
+    done(null, user.id);
+});
+passport.deserializeUser(function(user, done) {
+    done(null, user);
+});
+
+//passportの認証処理
+passport.use(new LocalStrategy(
+  {
+    usernameField: 'Email',
+  },
+  function(username, password, done) {
+    // テスト用ユーザー
+    var user = {id:"test", Email:"user@aaa.com",password:"password"};
+    console.log('testdata.id ' + user.id);
+    // 認証。
+    if(username == user.Email && password == user.password){
+      console.log('Authentication OK');
+      return done(null, user);
+    }
+    
+    return done(null, false, { message: 'ログインに失敗しました。' });
+  }
+));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
