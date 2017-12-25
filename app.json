@@ -7,12 +7,11 @@
   "formation": {
   },
   "addons": [
-    "herokuconnect",
     "heroku-postgresql"
   ],
   "buildpacks": [
     {
-      "url": "heroku/node.js"
+      "url": "heroku/nodejs"
     }
   ]
 }
