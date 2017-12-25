@@ -7,7 +7,6 @@
   "formation": {
   },
   "addons": [
-    "herokuconnect",
     "heroku-postgresql"
   ],
   "buildpacks": [
