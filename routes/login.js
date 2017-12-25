@@ -23,7 +23,6 @@ router.post('/',
                                    failureFlash: true,         //認証失敗時にflashメッセージを出力する設定
                                    session: true }),
   function(req, res, next){
-    //res.send("login success");
   }
 );
 
